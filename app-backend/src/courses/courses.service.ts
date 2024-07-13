@@ -1,24 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Course } from './entities/course.entity';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class CoursesService {
-  // create(createCourseDto: CreateCourseDto) {
-  //   return 'This action adds a new course';
-  // }
+  constructor(
+    @InjectRepository(Course)
+    private courseRepository: Repository<Course>,
+  ) {}
 
-  findAll() {
-    return `This action returns all courses`;
+  create(createCourseDto: CreateCourseDto) {
+    return this.courseRepository.save(createCourseDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  async findAll(): Promise<Course[]> {
+    return this.courseRepository.find();
   }
 
-  // update(id: number, updateCourseDto: UpdateCourseDto) {
-  //   return `This action updates a #${id} course`;
-  // }
+  async findOne(id: ObjectId): Promise<Course> {
+    return this.courseRepository.findOne({ where: { id: id } });
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+  async update(id: ObjectId, updateCourseDto: UpdateCourseDto) {
+    return this.courseRepository.update(id, updateCourseDto);
+  }
+
+  async remove(id: ObjectId) {
+    return this.courseRepository.delete(id);
   }
 }

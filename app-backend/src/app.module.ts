@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoursesModule } from './courses/courses.module';
+import { DataSource } from 'typeorm';
+import { Course } from './courses/entities/course.entity';
 
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { CoursesModule } from './courses/courses.module';
       username: 'root',
       password: 'example',
       database: 'test',
-      entities: [],
+      entities: [Course],
       synchronize: true,
       authSource: 'admin',
     }),
@@ -22,4 +24,6 @@ import { CoursesModule } from './courses/courses.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}
